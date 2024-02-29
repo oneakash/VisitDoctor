@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "636753960428",
+    "project_id": "visitdoctor-a470f",
+    "storage_bucket": "visitdoctor-a470f.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:636753960428:android:fdee2f9b071b0b700c34c9",
+        "android_client_info": {
+          "package_name": "com.example.visitdoctor"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBEGCKyH3WX4lND6YWL65jvrcUzJlGcgCE"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
