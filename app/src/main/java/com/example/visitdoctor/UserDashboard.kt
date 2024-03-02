@@ -23,7 +23,7 @@ import androidx.navigation.compose.rememberNavController
 import com.example.visitdoctor.ui.theme.VisitDoctorTheme
 import kotlinx.coroutines.launch
 
-data class Doctor(val name: String, val specialization: String)
+data class Doctor(val name: String, val specialization: String, val schedule: String)
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalFoundationApi::class)
 @Composable
@@ -80,24 +80,24 @@ fun UserDashboard(navHostController: NavHostController) {
         val tabItems = listOf("Cardiology", "Endocrinology", "Neurology", "Urology")
         val specialistDoctors = listOf(
             listOf(
-                Doctor("Dr. John Doe", "Cardiologist"),
-                Doctor("Dr. Alice Smith", "Cardiologist"),
-                Doctor("Dr. Emma Johnson", "Cardiologist")
+                Doctor("Dr. John Doe", "Cardiologist", "Sunday, 12 March : 11.00 - 12.00 AM"),
+                Doctor("Dr. Alice Smith", "Cardiologist", "Friday, 10 March : 12.00 - 9.00 PM"),
+                Doctor("Dr. Emma Johnson", "Cardiologist", "Friday, 10 March : 12.00 - 9.00 PM")
             ),
             listOf(
-                Doctor("Dr. Michael Brown", "Endocrinologist"),
-                Doctor("Dr. Sarah Lee", "Endocrinologist")
+                Doctor("Dr. Michael Brown", "Endocrinologist", "Friday, 10 March : 12.00 - 9.00 PM"),
+                Doctor("Dr. Sarah Lee", "Endocrinologist", "Friday, 10 March : 12.00 - 9.00 PM")
             ),
             listOf(
-                Doctor("Dr. David Clark", "Neurologist"),
-                Doctor("Dr. Jennifer White", "Neurologist"),
-                Doctor("Dr. James Anderson", "Neurologist")
+                Doctor("Dr. David Clark", "Neurologist", "Friday, 10 March : 12.00 - 9.00 PM"),
+                Doctor("Dr. Jennifer White", "Neurologist", "Friday, 10 March : 12.00 - 9.00 PM"),
+                Doctor("Dr. James Anderson", "Neurologist", "Friday, 10 March : 12.00 - 9.00 PM")
             ),
             listOf(
-                Doctor("Dr. Robert Taylor", "Urologist"),
-                Doctor("Dr. Olivia Wilson", "Urologist"),
-                Doctor("Dr. Daniel Martinez", "Urologist"),
-                Doctor("Dr. Emily Garcia", "Urologist")
+                Doctor("Dr. Robert Taylor", "Urologist", "Friday, 10 March : 12.00 - 9.00 PM"),
+                Doctor("Dr. Olivia Wilson", "Urologist", "Friday, 10 March : 12.00 - 9.00 PM"),
+                Doctor("Dr. Daniel Martinez", "Urologist", "Friday, 10 March : 12.00 - 9.00 PM"),
+                Doctor("Dr. Emily Garcia", "Urologist", "Friday, 10 March : 12.00 - 9.00 PM")
             )
         )
         var selectedTabIndex by remember {
@@ -165,7 +165,10 @@ fun UserDashboard(navHostController: NavHostController) {
                     Text(text = selectedDoctor!!.name)
                 },
                 text = {
-                    Text(text = "Specialization: ${selectedDoctor!!.specialization}")
+                    Column {
+                        Text(text = "Specialization: ${selectedDoctor!!.specialization}")
+                        Text(text = "Schedule: ${selectedDoctor!!.schedule}")
+                    }
                 },
                 confirmButton = {
                     Button(
@@ -173,7 +176,7 @@ fun UserDashboard(navHostController: NavHostController) {
                             dialogShown.value = false
                         }
                     ) {
-                        Text(text = "Booking")
+                        Text(text = "Book")
                     }
                 }
             )

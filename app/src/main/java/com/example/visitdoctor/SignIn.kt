@@ -1,5 +1,7 @@
 package com.example.visitdoctor
 
+import android.content.ContentValues
+import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -8,12 +10,16 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Visibility
+import androidx.compose.material.icons.filled.VisibilityOff
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.TextField
@@ -27,6 +33,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -34,11 +41,17 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import com.example.visitdoctor.ui.theme.VisitDoctorTheme
+import com.google.firebase.Firebase
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.auth
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SignIn(navHostController : NavHostController) {
-    var text by remember {
+    var textEmail by remember {
+        mutableStateOf(TextFieldValue(""))
+    }
+    var textPass by remember {
         mutableStateOf(TextFieldValue(""))
     }
     Column(
@@ -79,29 +92,24 @@ fun SignIn(navHostController : NavHostController) {
                     contentDescription = "User Sign In",
                     modifier = Modifier.size(height = 150.dp, width = 130.dp)
                 )
-                TextField(value = text, onValueChange = {
-                    text = it
-                },
-                    placeholder = {
-                        Text(
-                            text = "Enter your email"
-                        )
-                    },
+                TextField(
+                    value = textEmail,
+                    onValueChange = { textEmail = it },
+                    placeholder = { Text(text = "Enter your email") },
                     modifier = Modifier.padding(10.dp),
                     keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email)
                 )
-                TextField(value = text, onValueChange = {
-                    text = it
-                },
-                    placeholder = {
-                        Text(
-                            text = "Enter your password"
-                        )
-                    },
+                TextField(
+                    value = textPass,
+                    onValueChange = { textPass = it },
+                    placeholder = { Text(text = "Enter your password") },
                     modifier = Modifier.padding(10.dp),
-                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password)
+                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
+                    visualTransformation = PasswordVisualTransformation()
                 )
-                TextButton(onClick = { /*TODO*/ }) {
+                TextButton(onClick = {
+                    // Handle forgot password action
+                }) {
                     Text(
                         "Forgot Password",
                         fontSize = 16.sp
@@ -109,7 +117,7 @@ fun SignIn(navHostController : NavHostController) {
                 }
                 Button(
                     onClick = {
-                        navHostController.navigate(Screen.Dashboard.route)
+                        signInWithEmailPassword(textEmail.text, textPass.text, navHostController)
                     },
                     colors = ButtonDefaults.buttonColors(
                         Color(0xFF2FC09E)
@@ -140,6 +148,23 @@ fun SignIn(navHostController : NavHostController) {
             }
         }
     }
+}
+
+
+val auth = Firebase.auth
+
+fun signInWithEmailPassword(email: String, password: String, navController: NavHostController) {
+    auth.signInWithEmailAndPassword(email, password)
+        .addOnCompleteListener { task ->
+            if (task.isSuccessful) {
+                // Sign up success, navigate to the dashboard screen
+                navController.navigate(Screen.Dashboard.route) // Assuming Screen.Dashboard.route is your dashboard screen destination
+            } else {
+                // Sign up failed, display an error message to the user
+                Log.w(ContentValues.TAG, "signInWithEmail:failure", task.exception)
+                // Show toast message or handle error appropriately
+            }
+        }
 }
 
 @Preview(showBackground = true)

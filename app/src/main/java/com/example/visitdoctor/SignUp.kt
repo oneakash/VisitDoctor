@@ -1,6 +1,9 @@
 package com.example.visitdoctor
 
-import android.text.method.PasswordTransformationMethod
+import android.content.ContentValues
+import android.util.Log
+import android.widget.Toast
+import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -8,12 +11,16 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Visibility
+import androidx.compose.material.icons.filled.VisibilityOff
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.TextField
@@ -28,17 +35,22 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.PaintingStyle
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
+import com.example.visitdoctor.Screen
 import com.example.visitdoctor.ui.theme.VisitDoctorTheme
+import com.google.firebase.Firebase
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.auth
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun SignUp(navHostController: NavHostController, isEnabled: Boolean = false){
+fun SignUp(navHostController: NavHostController) {
     var textName by remember {
         mutableStateOf(TextFieldValue(""))
     }
@@ -48,6 +60,7 @@ fun SignUp(navHostController: NavHostController, isEnabled: Boolean = false){
     var textPass by remember {
         mutableStateOf(TextFieldValue(""))
     }
+
     Column(
         modifier = Modifier.padding(20.dp),
         verticalArrangement = Arrangement.Center,
@@ -85,74 +98,44 @@ fun SignUp(navHostController: NavHostController, isEnabled: Boolean = false){
                     color = Color.Black,
                     fontSize = 13.sp
                 )
-                TextField(value = textName, onValueChange = {
-                    textName = it
+                TextField(
+                    value = textName,
+                    onValueChange = {
+                        textName = it
                     },
                     placeholder = {
-                        Text(
-                            text = "Enter your full name"
-                        )
+                        Text(text = "Enter your full name")
                     },
                     label = {
-                        Text(
-                            text = "Enter your full name"
-                        )
+                        Text(text = "Enter your full name")
                     },
-                    modifier = Modifier
-                        .padding(10.dp)
-                        .padding(top = 20.dp)
+                    modifier = Modifier.padding(10.dp).padding(top = 20.dp)
                 )
-                TextField(value = textEmail, onValueChange = {
-                    textEmail = it
-                },
+                TextField(
+                    value = textEmail,
+                    onValueChange = {
+                        textEmail = it
+                    },
                     placeholder = {
-                        Text(
-                            text = "Enter your email"
-                        )
+                        Text(text = "Enter your email")
                     },
                     label = {
-                        Text(
-                            text = "Enter your email"
-                        )
+                        Text(text = "Enter your email")
                     },
                     modifier = Modifier.padding(10.dp),
                     keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email)
                 )
-                TextField(value = textPass, onValueChange = {
-                    textPass = it
-                },
-                    placeholder = {
-                        Text(
-                            text = "Enter your password"
-                        )
-                    },
-                    label = {
-                        Text(
-                            text = "Enter your password"
-                        )
-                    },
+                TextField(
+                    value = textPass,
+                    onValueChange = { textPass = it },
+                    placeholder = { Text(text = "Enter your password") },
                     modifier = Modifier.padding(10.dp),
-                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password)
-                )
-                TextField(value = textPass, onValueChange = {
-                    textPass = it
-                },
-                    placeholder = {
-                        Text(
-                            text = "Confirm your password"
-                        )
-                    },
-                    label = {
-                        Text(
-                            text = "Confirm your password"
-                        )
-                    },
-                    modifier = Modifier.padding(10.dp),
-                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password)
+                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
+                    visualTransformation = PasswordVisualTransformation()
                 )
                 Button(
                     onClick = {
-                        navHostController.navigate(Screen.Dashboard.route)
+                        signUpWithEmailPassword(textEmail.text, textPass.text, navHostController)
                     },
                     colors = ButtonDefaults.buttonColors(
                         Color(0xFF2FC09E)
@@ -165,7 +148,8 @@ fun SignUp(navHostController: NavHostController, isEnabled: Boolean = false){
                         fontSize = 25.sp
                     )
                 }
-                Row{
+
+                Row {
                     Text(
                         text = "Already have an account?",
                         fontSize = 15.sp,
@@ -185,9 +169,27 @@ fun SignUp(navHostController: NavHostController, isEnabled: Boolean = false){
     }
 }
 
+// Initialize Firebase Auth
+val authup = Firebase.auth
+
+fun signUpWithEmailPassword(email: String, password: String, navController: NavHostController) {
+    authup.createUserWithEmailAndPassword(email, password)
+        .addOnCompleteListener { task ->
+            if (task.isSuccessful) {
+                // Sign up success, navigate to the dashboard screen
+                navController.navigate(Screen.Dashboard.route) // Assuming Screen.Dashboard.route is your dashboard screen destination
+            } else {
+                // Sign up failed, display an error message to the user
+                Log.w(ContentValues.TAG, "createUserWithEmailAndPassword:failure", task.exception)
+                // Show toast message or handle error appropriately
+            }
+        }
+}
+
+
 @Preview(showBackground = true)
 @Composable
-fun SignUpPreview(){
+fun SignUpPreview() {
     VisitDoctorTheme {
         SignUp(navHostController = rememberNavController(),)
     }
