@@ -23,6 +23,12 @@ fun MainNavigation(){
         composable(Screen.Dashboard.route){
             UserDashboard(navHostController)
         }
+        composable(Screen.Booking.route){
+            Booking(navHostController)
+        }
+        composable(Screen.Profile.route){
+            PatientProfile(navHostController)
+        }
     }
 }
 
@@ -31,4 +37,7 @@ sealed class Screen(val route:String){
     object Second : Screen("second")
     object Greet : Screen("Greet")
     object Dashboard : Screen("dashboard")
+    object Booking : Screen("book")
+    object Profile : Screen("profile")
+
 }

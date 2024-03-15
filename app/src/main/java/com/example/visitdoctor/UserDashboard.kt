@@ -43,16 +43,20 @@ fun UserDashboard(navHostController: NavHostController) {
             verticalAlignment = Alignment.CenterVertically,
             modifier = Modifier.fillMaxWidth()
         ) {
-            Icon(
-                painter = painterResource(id = R.drawable.bars_solid),
-                contentDescription = "Menu",
-                modifier = Modifier.size(width = 45.dp, height = 35.dp)
-            )
-            Text(
-                text = "Hello, Asif Hassan",
-                fontSize = 20.sp,
-                modifier = Modifier.padding(start = 10.dp)
-            )
+            Button(onClick = {
+                navHostController.navigate(Screen.Profile.route)
+            }) {
+                Icon(
+                    painter = painterResource(id = R.drawable.bars_solid),
+                    contentDescription = "Menu",
+                    modifier = Modifier.size(width = 45.dp, height = 35.dp)
+                )
+                Text(
+                    text = "Welcome",
+                    fontSize = 20.sp,
+                    modifier = Modifier.padding(start = 10.dp)
+                )
+            }
         }
         Spacer(modifier = Modifier.padding(10.dp))
         OutlinedTextField(
@@ -173,7 +177,8 @@ fun UserDashboard(navHostController: NavHostController) {
                 confirmButton = {
                     Button(
                         onClick = {
-                            dialogShown.value = false
+//                            dialogShown.value = false
+
                         }
                     ) {
                         Text(text = "Book")
