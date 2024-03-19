@@ -177,8 +177,8 @@ fun UserDashboard(navHostController: NavHostController) {
                 confirmButton = {
                     Button(
                         onClick = {
-//                            dialogShown.value = false
-
+                            dialogShown.value = false
+                            navHostController.navigate(Screen.Booking.route)
                         }
                     ) {
                         Text(text = "Book")

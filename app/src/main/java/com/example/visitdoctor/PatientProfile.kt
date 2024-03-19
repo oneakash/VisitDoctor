@@ -33,6 +33,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.PaintingStyle
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
@@ -131,9 +132,12 @@ fun PatientProfile(navHostController: NavHostController) {
 //                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
 //                    visualTransformation = PasswordVisualTransformation()
                 )
+                val context = LocalContext.current
                 Button(
                     onClick = {
 //                        signUpWithEmailPassword(textEmail.text, textPass.text, navHostController)
+                              navHostController.navigate(Screen.Dashboard.route)
+                        Toast.makeText(context, "Updated", Toast.LENGTH_SHORT).show()
                     },
                     colors = ButtonDefaults.buttonColors(
                         Color(0xFF2FC09E)
